@@ -1,0 +1,334 @@
+public enum Farbe {
+	
+	WEIß,
+	ROT,
+	GELB,
+	BLAU
+
+}
+
+////////
+
+import java.util.Vector;
+
+public class Fenster {
+
+	double breite;
+	double höhe;
+	Fensterart fensterArt;
+	Lasur lasur;
+	Farbe farbe;
+	boolean Sprossen;
+	public Vector<Fenster> fens;
+	public Vector<Fensterflügel> fensflu;
+
+	public Fenster(double breite, double höhe, Lasur lasur, Vector<Fensterflügel> f, Fensterart art, Farbe farbe,
+			boolean spr) {
+		super();
+		this.Sprossen = spr;
+		this.breite = breite;
+		this.höhe = höhe;
+		this.fensterArt = art;
+		this.fensflu = f;
+		this.lasur = lasur;
+		switch (fensterArt) {
+		case ALUFENSTER:
+			this.farbe = farbe;
+			this.lasur = null;
+			break;
+		case HOLZALUFENSTER:
+			this.farbe = farbe;
+			break;
+		case HOLZFENSTER:
+			if (lasur != null) {
+				this.farbe = null;
+			} else
+				this.farbe = farbe;
+			break;
+		case KUNSTSTOFFFENSTER:
+			this.lasur = null;
+			break;
+		default:
+			break;
+
+		}
+
+	}
+
+	public double preis() {
+		double preis = 0;
+		double größe = breite * höhe;
+		double umfang = höhe * 2 + breite * 2;
+		switch (fensterArt) {
+		case ALUFENSTER:
+			preis = größe * 110;
+			break;
+		case HOLZALUFENSTER:
+			preis = größe * 135;
+			break;
+		case HOLZFENSTER:
+			preis = größe * 110;
+			break;
+		case KUNSTSTOFFFENSTER:
+			preis = größe * 95;
+			break;
+		default:
+			break;
+
+		}
+		for (int y = 0; y <= fensflu.size() - 1; y++) {
+
+			switch (fensflu.elementAt(y).flügeltyp) {
+			case DREHKIPPMECHANISMUS:
+				preis = preis + 55;
+				break;
+			case DREHMECHANISMUS:
+				preis = preis + 40;
+				break;
+			case FESTVERGLASUNG:
+				break;
+			default:
+				break;
+
+			}
+
+			if ((fensterArt == Fensterart.HOLZALUFENSTER || fensterArt == Fensterart.HOLZFENSTER)
+					&& lasur == Lasur.HELL)
+				preis = preis + (umfang * 4);
+
+			if (y != 0)
+				preis = preis + 30;
+
+		}
+
+		if (Sprossen == true)
+			preis = preis + (preis * 0.15);
+
+		return preis;
+	}
+
+}
+
+//////////
+
+public enum Fensterart {
+
+	HOLZFENSTER, KUNSTSTOFFFENSTER, ALUFENSTER, HOLZALUFENSTER
+
+}
+
+//////////
+
+import java.util.Vector;
+
+public class FensterBestellung {
+
+	Vector<Fenster> fenster;
+	Vector<Fensterflügel> flügel;
+	Kundendatenansatz ka = new Kundendatenansatz(null, null, null, null, null, null);
+
+	public FensterBestellung(Vector<Fenster> fenster, Kundendatenansatz k, Vector<Fensterflügel> flügel) {
+		super();
+		this.flügel = flügel;
+		this.fenster = fenster;
+		ka = k;
+	}
+
+	@Override
+	public String toString() {
+
+		String bestellung = "------|Bestellungsdaten|------\r\n";
+		Fenster fe = new Fenster(0, 0, Lasur.DUNKEL, flügel, Fensterart.ALUFENSTER, Farbe.BLAU, false);
+		Fensterflügel fl = new Fensterflügel(Verglasung.DOPPELVERGLASUNG, Flügeltyp.DREHKIPPMECHANISMUS,
+				Flügelbefestigung.LINKS);
+		for (int i = 0; i <= fenster.size() - 1; i++) {
+			bestellung = bestellung + "[Fenster Nr." + (i + 1) + "]" + "\r\n";
+			fe = fenster.elementAt(i);
+			bestellung = bestellung + "Höhe: " + fe.höhe + "m" + "\r\n";
+			bestellung = bestellung + "Breite: " + fe.breite + "m" + "\r\n";
+			bestellung = bestellung + "Fenster Art: " + fe.fensterArt + "\r\n";
+			bestellung = bestellung + "Farbe: " + fe.farbe + "\r\n";
+			bestellung = bestellung + "Lasur: " + fe.lasur + "\r\n";
+			bestellung = bestellung + "\r\n";
+
+			for (int y = 0; y <= fe.fensflu.size() - 1; y++) {
+				bestellung = bestellung + "-Flügel Nr." + (y + 1) + "-" + "\r\n";
+				fl = fe.fensflu.elementAt(y);
+				bestellung = bestellung + "Flügeltyp: " + fl.flügeltyp + "\r\n";
+				bestellung = bestellung + "Verglasung: " + fl.verglasung + "\r\n";
+				bestellung = bestellung + "Flügelbefestigung: " + fl.fb + "\r\n";
+				bestellung = bestellung + "Sprossen: " + fe.Sprossen + "\r\n";
+				bestellung = bestellung + "\r\n";
+			}
+
+		}
+		bestellung = bestellung + "------|Kundendaten|------\r\n";
+		bestellung = bestellung + "Name: " + ka.nachname + "\r\n";
+		bestellung = bestellung + "Vorname: " + ka.vorname + "\r\n";
+		bestellung = bestellung + "Ort: " + ka.ort + "\r\n";
+		bestellung = bestellung + "PLZ: " + ka.plz + "\r\n";
+		bestellung = bestellung + "Straße: " + ka.straße + "\r\n";
+		bestellung = bestellung + "Hausnummer: " + ka.hausnummer + "\r\n";
+
+		return bestellung;
+
+	}
+
+	public String fehler() {
+
+		Fenster fe = new Fenster(0, 0, Lasur.DUNKEL, flügel, Fensterart.ALUFENSTER, Farbe.BLAU, false);
+		Fensterflügel fl = new Fensterflügel(Verglasung.DOPPELVERGLASUNG, Flügeltyp.DREHKIPPMECHANISMUS,
+				Flügelbefestigung.LINKS);
+		fe = fenster.elementAt(0);
+		fl = fe.fensflu.elementAt(0);
+
+		double Größe = 0;
+		for (int i = 0; i <= fenster.size() - 1; i++) {
+			fe = fenster.elementAt(i);
+
+			Größe = Größe + (fe.breite * fe.höhe);
+
+			if ((fe.breite / fe.fensflu.size()) < 0.8 || (fe.höhe / fe.fensflu.size()) < 0.8)
+				return "Jeder Flügel ist nicht mindestens 800mm breit und 800mm hoch";
+
+			if ((fe.höhe > 2 || fe.breite > 4) && fe.fensterArt == Fensterart.HOLZFENSTER)
+				return "Die Gesamtgröße der Holz Fenster darf 2000mm Höhe und 4000mm Breite nicht überschreiten";
+
+			if ((fe.höhe > 2 || fe.breite > 5) && fe.fensterArt != Fensterart.HOLZFENSTER)
+				return "Die Gesamtgröße der Fenster darf 2000mm Höhe und 5000mm Breite nicht überschreiten";
+
+			for (int y = 0; y <= fe.fensflu.size() - 1; y++) {
+
+				fl = fe.fensflu.elementAt(y);
+				if (fe.fensterArt == Fensterart.ALUFENSTER && fl.verglasung != Verglasung.DREIFACHVERGLASUNG)
+					return "Alu-Fenster werden nur mit Dreifachverglasung geliefert";
+
+				if (fe.fensflu.size() == 2) {
+
+					if (y == 0 && fl.flügeltyp != Flügeltyp.FESTVERGLASUNG && fl.fb != Flügelbefestigung.LINKS) {
+						return "die Flügelbefestigung für das linke Flügel muss links stehen";
+					} else if (y == 1 && fl.flügeltyp != Flügeltyp.FESTVERGLASUNG
+							&& fl.fb != Flügelbefestigung.RECHTS) {
+						return "die Flügelbefestigung für das linke Flügel muss rechts stehen";
+					}
+				}
+				if (fe.fensflu.size() == 3) {
+
+					if (y == 0 && fl.flügeltyp != Flügeltyp.FESTVERGLASUNG && fl.fb != Flügelbefestigung.LINKS) {
+						return "die Flügelbefestigung für das linke Flügel muss links stehen";
+					} else if (y == 3 && fl.flügeltyp != Flügeltyp.FESTVERGLASUNG
+							&& fl.fb != Flügelbefestigung.RECHTS) {
+						return "die Flügelbefestigung für das linke Flügel muss rechts stehen";
+					}
+				}
+			}
+
+		}
+
+		if (Größe < 10) {
+			return "Die summe der Fensterflächen ist unter 10m²";
+		} else
+			return null;
+	}
+
+	public double preis() {
+
+		double preis = 0;
+		for (int i = 0; i <= fenster.size() - 1; i++) {
+			preis = preis + fenster.elementAt(i).preis();
+		}
+
+		return preis;
+	}
+}
+
+///////////
+
+import java.util.Vector;
+
+public class Fensterflügel {
+
+	Verglasung verglasung;
+	Flügeltyp flügeltyp;
+	Flügelbefestigung fb;
+
+	public Vector<Fensterflügel> f;
+
+	public Fensterflügel(Verglasung verglasung, Flügeltyp flügeltyp, Flügelbefestigung fb) {
+		super();
+		this.verglasung = verglasung;
+		this.flügeltyp = flügeltyp;
+		this.fb = fb;
+		switch (flügeltyp) {
+		case DREHKIPPMECHANISMUS:
+			break;
+		case DREHMECHANISMUS:
+			break;
+		case FESTVERGLASUNG:
+			this.fb = null;
+			break;
+		default:
+			break;
+		}
+
+	}
+
+}
+
+///////////
+
+public enum Flügelbefestigung {
+	
+	RECHTS,
+	LINKS
+
+}
+
+////////////
+
+public enum Flügeltyp {
+	
+	DREHMECHANISMUS,
+	DREHKIPPMECHANISMUS,
+	FESTVERGLASUNG
+
+}
+
+////////////
+
+public class Kundendatenansatz {
+
+	String nachname;
+	String vorname;
+	String straße;
+	String hausnummer;
+	String plz;
+	String ort;
+
+	public Kundendatenansatz(String NN, String VN, String STR, String HN, String PLZ, String ORT) {
+		nachname = NN;
+		vorname = VN;
+		straße = STR;
+		hausnummer = HN;
+		plz = PLZ;
+		ort = ORT;
+	}
+}
+
+///////////
+
+public enum Lasur {
+	
+	HELL,
+	DUNKEL
+
+}
+
+/////////////
+
+public enum Verglasung {
+	
+	DOPPELVERGLASUNG,
+	DREIFACHVERGLASUNG
+
+}
