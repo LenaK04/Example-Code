@@ -1,0 +1,202 @@
+public enum Anrede {
+
+    FRAU,
+    HERR
+
+}
+
+/////////////////
+
+import static krankenhaus.Rang.*;
+
+public class Arzt extends Mitarbeiter {
+
+    int bueronummerzimmer;
+    Rang rang;
+
+    Arzt(String NN, String VN, Geschlecht GS, Anrede AN, int PN, int Gehalt, int BNZ, Rang R ) {
+        super(NN, VN, GS, AN, PN, Gehalt);
+        bueronummerzimmer = BNZ;
+        rang = R;
+
+    }
+    @Override
+public String ansprache(){
+
+
+        switch(anrede)
+        {
+        case FRAU : if(rang == DIREKTOR) return "Direktorin "+ vorname + " " + nachname;
+                    else if(rang == ASSISTENZARZT) return "Assistenzärztin "+ vorname + " " + nachname;
+                    else if(rang == FACHARZT) return "Fachärztin "+ vorname + " " + nachname;
+                    else if(rang == OBERARZT) return "Oberärztin "+ vorname + " " + nachname;
+                    else if(rang == LEITENDER_OBERARZT) return "Leitende Oberärztin "+ vorname + " " + nachname;
+                    else if(rang == CHEFARZT) return "Chefärztin "+ vorname + " " + nachname;
+
+
+        case HERR : if(rang == DIREKTOR) return "Direktor "+ vorname + " " + nachname;
+                    else if(rang == ASSISTENZARZT) return "Assistenzarzt "+ vorname + " " + nachname;
+                    else if(rang == FACHARZT) return "Facharzt "+ vorname + " " + nachname;
+                    else if(rang == OBERARZT) return "Oberarzt "+ vorname + " " + nachname;
+                    else if(rang == LEITENDER_OBERARZT) return "Leitender Oberarzt "+ vorname + " " + nachname;
+                    else if(rang == CHEFARZT) return "Chefarzt "+ vorname + " " + nachname;
+
+        }
+        return "Was für eine Anrede wollen Sie benutzen?";
+    }
+
+    public boolean rangHoeherAls(Arzt a) {
+
+        return rang.ordinal() > a.rang.ordinal();
+
+    }
+
+}
+
+////////////
+
+public enum Geschlecht {
+		MAENNLICH,
+		WEIBLICH,
+		DIVERS;
+}
+
+///////////
+
+public class GesetzlichVersicherter extends Kunde {
+
+    String krankenkasse;
+
+    public GesetzlichVersicherter(String NN, String VN, Geschlecht GS, Anrede AN, Arzt BA, String KK) {
+        super(NN, VN, GS, AN, BA);
+        krankenkasse = KK;
+
+    }
+
+}
+
+//////////
+
+public class Krankenpfleger extends Mitarbeiter {
+
+    Krankenpfleger(String NN, String VN, Geschlecht GS, Anrede AN, int PN, int Gehalt) {
+        super(NN, VN, GS, AN, PN, Gehalt);
+
+    }
+
+    @Override
+    public String ansprache(){
+
+
+            switch(anrede)
+            {
+            case FRAU : return "Krankenpflegerin "+ vorname + " "+ nachname;
+
+
+            case HERR :  return "Krankenpfleger "+ vorname + " "+ nachname;
+
+            }
+            return "Was für eine Anrede wollen Sie benutzen?";
+        }
+    public String formloseAnsprache() {
+
+        return super.ansprache();
+
+    }
+}
+
+//////////
+
+public class Kunde extends Person{
+
+    Arzt behandelnderArzt;
+
+    public Kunde(String NN, String VN, Geschlecht GS, Anrede AN, Arzt BA) {
+        super(NN, VN, GS, AN);
+        behandelnderArzt = BA;
+    }
+
+    public boolean arztRangHoeherAlsBei (Kunde ku2) {
+
+        return this.behandelnderArzt.rang.ordinal() < ku2.behandelnderArzt.rang.ordinal();
+    }
+}
+
+/////////
+
+public class Mitarbeiter extends Person {
+    int personalnummer;
+    int gehalt;
+
+    Mitarbeiter(String NN, String VN, Geschlecht GS, Anrede AN, int PN, int Gehalt) {
+        super(NN, VN, GS, AN);
+        personalnummer = PN;
+        gehalt = Gehalt;
+    }
+}
+
+//////////
+
+public class Person{
+
+    protected String nachname;
+    protected String vorname;
+    protected Geschlecht geschlecht;
+    protected Anrede anrede;
+
+    public Person(String NN, String VN, Geschlecht GS, Anrede AN){
+
+        nachname = NN;
+        vorname = VN;
+        geschlecht = GS;
+        anrede = AN;
+
+    }
+
+    public String ansprache(){
+
+        switch(anrede)
+        {
+        case FRAU : return "Frau " + vorname + " " + nachname; 
+
+        case HERR : return "Herr " + vorname + " "+ nachname;
+        }
+        return "Was ist ihre Anrede?";
+    }
+}
+
+//////////
+
+public class PersonenImKrankenhaus {
+	
+	public static void main(String args[]) {
+		
+	}
+}
+
+///////////
+
+public class PrivatVersicherter extends Kunde{
+
+    String iban;
+    String bic;
+
+    public PrivatVersicherter(String NN, String VN, Geschlecht GS, Anrede AN, Arzt BA, String I, String B) {
+        super(NN, VN, GS, AN, BA);
+        iban = I;
+        bic = B;
+    }
+}
+
+///////////
+
+public enum Rang {
+
+    ASSISTENZARZT,
+    FACHARZT,
+    OBERARZT,
+    LEITENDER_OBERARZT,
+    CHEFARZT,
+    DIREKTOR
+
+}
